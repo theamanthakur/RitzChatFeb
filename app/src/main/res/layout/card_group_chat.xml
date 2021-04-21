@@ -31,7 +31,7 @@
             />
         <TextView
             android:id="@+id/textmsgsender"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textgrpName"
             android:layout_toEndOf="@+id/groupImage"
@@ -40,6 +40,19 @@
             android:layout_marginTop="2dp"
             android:textStyle="bold"
             />
+        <TextView
+            android:id="@+id/textmsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textgrpName"
+            android:layout_toEndOf="@+id/textmsgsender"
+            android:text="Sender msg"
+            android:textSize="16sp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="5dp"
+
+            />
+
 
 
     </RelativeLayout>

@@ -12,7 +12,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,17 +32,21 @@ public class GroupsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+//    private static final String ARG_PARAM1 = "param1";
+//    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private View groupFragmentView;
-    private ListView listView;
-    private ArrayAdapter<String> arrayAdapter;
-    private ArrayList<String> groupList = new ArrayList<>();
+//    private ListView listView;
+    RecyclerView recyclerView;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    private AdapterGroupList adapterGroupList;
+    private ArrayList<modelGroupsList> groupList;
     DatabaseReference groupRef;
+    String currentUser="";
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -77,50 +84,67 @@ public class GroupsFragment extends Fragment {
         // Inflate the layout for this fragment
        groupFragmentView = inflater.inflate(R.layout.fragment_groups, container, false);
        groupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
-       initializeItem();
-       getAndDisplayGroups();
+       recyclerView = groupFragmentView.findViewById(R.id.rvGroupList);
+//       currentUser = user.getUid();
+        mAuth = FirebaseAuth.getInstance();
 
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               String curGroupname = parent.getItemAtPosition(position).toString();
-               Intent grpIntent = new Intent(getContext(),groupChatActivity.class);
-               grpIntent.putExtra("GroupName",curGroupname);
-               startActivity(grpIntent);
+        loadGroupList();
+       return groupFragmentView;
 
-           }
-       });
-
-       return  groupFragmentView;
     }
 
-    private void getAndDisplayGroups() {
-        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void loadGroupList() {
+        groupList = new ArrayList<>();
+        groupRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Set<String> set = new HashSet<>();
-                Iterator iterator = snapshot.getChildren().iterator();
-
-                while (iterator.hasNext()){
-                    set.add(((DataSnapshot)iterator.next()).getKey());
-                  //  Toast.makeText(getContext(), "Test check", Toast.LENGTH_SHORT).show( );
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                groupList.size();
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    if (ds.child("Participants").child(mAuth.getCurrentUser().getUid()).exists()){
+                        modelGroupsList model = ds.getValue(modelGroupsList.class);
+                        groupList.add(model);
+                    }
                 }
-                groupList.clear();
-                arrayAdapter.addAll(set);
-                arrayAdapter.notifyDataSetChanged();
+                adapterGroupList = new AdapterGroupList(getActivity(),groupList);
+                recyclerView.setAdapter(adapterGroupList);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Test check", Toast.LENGTH_SHORT).show( );
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
 
-    private void initializeItem() {
-        listView = groupFragmentView.findViewById(R.id.list_view);
-        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
-        listView.setAdapter(arrayAdapter);
 
-    }
+    //
+//    private void getAndDisplayGroups() {
+//        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Set<String> set = new HashSet<>();
+//                Iterator iterator = snapshot.getChildren().iterator();
+//
+//                while (iterator.hasNext()){
+//                    set.add(((DataSnapshot)iterator.next()).getKey());
+//                  //  Toast.makeText(getContext(), "Test check", Toast.LENGTH_SHORT).show( );
+//                }
+//                groupList.clear();
+//                arrayAdapter.addAll(set);
+//                arrayAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(getContext(), "Test check", Toast.LENGTH_SHORT).show( );
+//            }
+//        });
+//    }
+//
+//    private void initializeItem() {
+//        listView = groupFragmentView.findViewById(R.id.list_view);
+//        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
+//        listView.setAdapter(arrayAdapter);
+//
+//    }
 }

@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
+        currentUserID = mAuth.getCurrentUser().getUid();
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
         toolbar = findViewById(R.id.main_page_toolbar);
         mAuth = FirebaseAuth.getInstance();
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             sendToLoginActivity();
         }else {
             updateUserStatus("online");
+            Toast.makeText(this, ""+currentUserID, Toast.LENGTH_SHORT).show();
             veifyUserExistance();
 
         }

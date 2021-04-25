@@ -53,6 +53,19 @@
 
             />
 
+        <TextView
+            android:id="@+id/textTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textmsg"
+            android:layout_alignParentEnd="true"
+            android:text="Sender msg"
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+
+            />
+
 
 
     </RelativeLayout>

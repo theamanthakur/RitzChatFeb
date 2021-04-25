@@ -37,9 +37,27 @@
                android:textColor="#000000"
                android:textStyle="bold"
                />
+           <ImageButton
+               android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:id="@+id/btnAddPart"
+               android:src="@drawable/ic_baseline_person_add_24"
+               android:layout_toRightOf="@id/groupTitletv"
+               android:layout_marginStart="100dp"
+               />
        </RelativeLayout>
 
    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGroupChat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/groupChatLayout"
+        android:layout_above="@+id/myLinearLayout"
+        app:stackFromEnd="true"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,10 +76,11 @@
 
         <EditText
             android:id="@+id/input_groupMsg"
-            android:layout_width="330dp"
+            android:layout_width="312dp"
             android:layout_height="wrap_content"
             android:background="@drawable/inputs"
-            android:padding="17dp"
+            android:padding="10dp"
+            android:layout_marginTop="5dp"
             android:hint="Write your message here"
             />
         <ImageButton
@@ -69,6 +88,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="4dp"
+
             android:src="@drawable/ic_baseline_send_24"
             />
 

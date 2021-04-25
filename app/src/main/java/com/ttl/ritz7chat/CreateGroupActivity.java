@@ -156,6 +156,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         hashMap.put("createdBy",""+firebaseAuth.getUid());
 
 
+
         DatabaseReference grpRef = FirebaseDatabase.getInstance().getReference("Groups");
         grpRef.child(g_timestamp).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

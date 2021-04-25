@@ -158,6 +158,7 @@ public class ChatActivity extends AppCompatActivity {
                         Messages messages = dataSnapshot.getValue(Messages.class);
 //                        String date = messages.getDate();
 //                        textDate.setText(date);
+
                         messagesList.add(messages);
 
                         messageAdapter.notifyDataSetChanged();

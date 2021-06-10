@@ -1,12 +1,15 @@
 package com.ttl.ritz7chat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.TaskInfo;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
@@ -43,8 +46,11 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,7 +70,7 @@ public class groupChatActivity extends AppCompatActivity {
     String getGroupId, myGroupRole = "", currUserId, currUsername, currDate, currTime;
     DatabaseReference databaseReference, groupRef, groupMsgRefKey;
     FirebaseAuth auth, currentUserID;
-    ImageButton btnAdd;
+    ImageButton btnAdd, btnInfo;
     private String saveCurrentTime, saveCurrentDate;
     private String checker = "", myUrl;
     private Uri fileuri;
@@ -136,6 +142,14 @@ public class groupChatActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        btnInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(groupChatActivity.this, groupInfoActivity.class);
+                intent.putExtra("groupId", getGroupId);
+                startActivity(intent);
+            }
+        });
 
         btnFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +173,12 @@ public class groupChatActivity extends AppCompatActivity {
                             startActivityForResult(intent.createChooser(intent, "Select Image"), 438);
 
 
+                        }
+                        if (i==1)
+                        {
+
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent,101);
                         }
                         if (i == 2) {
                             checker = "pdf";
@@ -372,6 +392,7 @@ public class groupChatActivity extends AppCompatActivity {
             groupIcon = findViewById(R.id.groupIcon);
             btnFile = findViewById(R.id.btnFiles);
             btnAdd = findViewById(R.id.btnAddPart);
+            btnInfo = findViewById(R.id.btnInfo);
             setSupportActionBar(toolbar);
 //        getSupportActionBar().setTitle(getGroupName);
             userMsgText = findViewById(R.id.input_groupMsg);
@@ -397,7 +418,11 @@ public class groupChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         String timestamp = ""+System.currentTimeMillis();
-
+        if (resultCode == Activity.RESULT_OK){
+            if (requestCode == 101){
+                onCaptureImageResult(data);
+            }
+        }
         if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
 
@@ -611,4 +636,50 @@ public class groupChatActivity extends AppCompatActivity {
 //                });
          }
 
+    private void onCaptureImageResult(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG,90,bytes);
+        byte bb[] = bytes.toByteArray();
+        uploadToFirebase(bb);
     }
+
+    private void uploadToFirebase(byte[] bb) {
+        dialog.setTitle("Sending File");
+        dialog.setMessage("Please wait while image is uploading...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        checker = "camera";
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
+        StorageReference sr = storageReference.child("mypic" + "." + "jpg");
+
+        sr.putBytes(bb).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()){
+                    Map messageTextBody = new HashMap<>();
+                    messageTextBody.put("message", task.getResult().getDownloadUrl().toString());
+                    messageTextBody.put("type", checker);
+                    messageTextBody.put("sender", auth.getUid());
+                    messageTextBody.put("time", saveCurrentTime);
+                    messageTextBody.put("date", saveCurrentDate);
+
+                    Map messageBodyDetails = new HashMap();
+                    messageBodyDetails.put(timestamp, messageTextBody);
+                    groupRef.child(getGroupId).child("Messages").child(timestamp)
+                            .setValue(messageTextBody)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    dialog.dismiss();
+                                }
+                            });
+                }
+            }
+        });
+
+    }
+
+}

@@ -83,8 +83,13 @@ public class AdapterGroupList extends RecyclerView.Adapter<AdapterGroupList.hold
                             String msg = ""+ds.child("message").getValue();
                             String time = ""+ds.child("time").getValue();
                             String uid = ""+ds.child("sender").getValue();
+                            String msgType = ""+ds.child("type").getValue();
 
-                            holder.grpMsg.setText(msg);
+                            if (msgType.equals("camera") || msgType.equals("image")) {
+                                holder.grpMsg.setText("Sent Image");
+                            }else {
+                                holder.grpMsg.setText(msg);
+                            }
                             holder.time.setText(time);
 
                             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("UsersChat");

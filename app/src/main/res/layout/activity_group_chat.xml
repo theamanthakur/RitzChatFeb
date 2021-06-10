@@ -45,6 +45,15 @@
                android:layout_toRightOf="@id/groupTitletv"
                android:layout_marginStart="100dp"
                />
+           <ImageButton
+               android:id="@+id/btnInfo"
+               android:layout_width="32dp"
+               android:layout_height="32dp"
+               android:background="@drawable/ic_baseline_info_24"
+               android:layout_toRightOf="@id/btnAddPart"
+               android:layout_marginStart="20dp"
+               />
+
        </RelativeLayout>
 
    </androidx.appcompat.widget.Toolbar>

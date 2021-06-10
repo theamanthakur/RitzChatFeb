@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
-        currentUserID = mAuth.getCurrentUser().getUid();
+//        currentUserID = mAuth.getCurrentUser().getUid();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         toolbar = findViewById(R.id.main_page_toolbar);
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requesNewGroup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.Theme_AppCompat_Light);
         builder.setTitle("Enter Group Name");
         final EditText groupNameText = new EditText(MainActivity.this);
         groupNameText.setHint("e.g. Developer Group");

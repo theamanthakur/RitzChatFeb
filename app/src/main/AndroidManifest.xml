@@ -16,7 +16,8 @@
         android:roundIcon="@drawable/iconr"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ritz7Chat">
-        <activity android:name=".GroupParticipantAddActivity"></activity>
+        <activity android:name=".groupInfoActivity"></activity>
+        <activity android:name=".GroupParticipantAddActivity" />
         <activity android:name=".CreateGroupActivity" />
         <activity android:name=".imageViewerActivity" />
         <activity android:name=".ChatActivity" />

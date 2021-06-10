@@ -99,6 +99,7 @@ public class GroupsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 groupList.size();
+                groupList.clear();
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     if (ds.child("Participants").child(mAuth.getCurrentUser().getUid()).exists()){
                         modelGroupsList model = ds.getValue(modelGroupsList.class);

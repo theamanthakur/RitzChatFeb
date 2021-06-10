@@ -83,6 +83,14 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.hold
                 holder.messageIv.setImageResource(R.drawable.group);
             }
 
+        }else if (msgType.equals("camera")){
+            holder.messageTv.setVisibility(View.GONE);
+            holder.messageIv.setVisibility(View.VISIBLE);
+            try {
+                Picasso.get().load(message).placeholder(R.drawable.user).into(holder.messageIv);
+            }catch (Exception e){
+//                holder.messageIv.setImageResource(R.drawable.group);
+            }
         }
 
         holder.messageTv.setText(message);
